@@ -21,7 +21,7 @@ const secret= "super-duper-secret";
 
 const app = express();
 app.use(require('cors')());
-const port = 5050;
+const PORT = 5050;
 
 
 
@@ -30,11 +30,11 @@ const port = 5050;
 const NEW_PEER = "new_peer_event";
 const http = require("http");
 const socketIO = require("socket.io");
-const socketPort = 3030;
+const socketPort = process.env.PORT || 3030;
 const server = http.createServer(app);
 const io = socketIO(server, {
     cors: true,
-    origins:["localhost:3000"]
+    //origins:["localhost:3000"]
 });
 
 server.listen(socketPort, () => {
@@ -184,7 +184,7 @@ const databaseSetup = async () => {
     const exec = require("child_process").exec;
     //mysql -u root < schema.sql
     const mysqlCMD = new Promise((resolve, reject) => {
-        exec("mysql -u root < schema.sql",(error, stdout, stderr) => {
+        exec("",(error, stdout, stderr) => {
             if(stderr) {
                 console.log("stderr");
                 reject(new Error(stderr));
@@ -198,14 +198,20 @@ const databaseSetup = async () => {
             resolve();
         });
     });
-
+    //mysql://b4410f552ec22f:cd993a39@us-cdbr-east-04.cleardb.com/heroku_d74528e87dcb28b?reconnect=true
+    //mysql://b4410f552ec22f:cd993a39@us-cdbr-east-04.cleardb.com/heroku_d74528e87dcb28b?reconnect=true
     try{
         await mysqlCMD;
         const connection = require("mysql").createPool({
+            // connectionLimit : 100,
+            // host: "localhost",
+            // user:"root",
+            // database:"study"
             connectionLimit : 100,
-            host: "localhost",
-            user:"root",
-            database:"study"
+            host: "us-cdbr-east-04.cleardb.com",
+            user:"b4410f552ec22f",
+            database:"heroku_d74528e87dcb28b",
+            password:"cd993a39"
         });
         const usersService = new MySQLUsersService(connection);
         const classesService = new MySQLClassesService(connection);
@@ -262,8 +268,8 @@ const main = () => {
         res.send("Bad Request!");
     });
 
-    app.listen(port, () => {
-        console.log(`Listening on port ${port}`);
+    app.listen(process.env.PORT || PORT, () => {
+        console.log(`Listening on PORT ${PORT}`);
     });
     
 };
@@ -286,7 +292,7 @@ const main = () => {
 // const http = require("http");
 // const socketIO = require("socket.io"); 
 
-// // setup the port our backend app will run on
+// // setup the PORT our backend app will run on
 // const PORT = 5050;
 // const NEW_MESSAGE_EVENT = "new-message-event";
 
