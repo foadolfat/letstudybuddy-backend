@@ -40,6 +40,9 @@ const io = socketIO(server, {
 server.listen(socketPort, () => {
     console.log(`listening on *:${socketPort}`);
 });
+io.configure( () =>
+  {io.set("transports", ["xhr-polling"])
+  io.set("polling duration", 10)})
 io.use((socket, next) => {
     const token = socket.handshake.auth.token;
     //console.log("index ", token)
