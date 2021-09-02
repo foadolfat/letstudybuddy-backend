@@ -184,7 +184,7 @@ const databaseSetup = async () => {
     const exec = require("child_process").exec;
     //mysql -u root < schema.sql
     const mysqlCMD = new Promise((resolve, reject) => {
-        exec("",(error, stdout, stderr) => {
+        exec("ls",(error, stdout, stderr) => {
             if(stderr) {
                 console.log("stderr");
                 reject(new Error(stderr));
