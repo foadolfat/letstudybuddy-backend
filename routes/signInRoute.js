@@ -2,6 +2,7 @@ var express = require(`express`)
 var router = express.Router();
 const authService = require("../services/AuthService") 
 
+//SIGN IN ROUTE
 router
     .use(function timeLog(req, res, next) {
         console.log('Access signin Time: ', Date.now());

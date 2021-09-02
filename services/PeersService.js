@@ -1,8 +1,10 @@
 /**
  * @typedef {Object} Peer
+ * @property {number} room_id
  * @property {number} user_id
  * @property {number} peer_id
  * @property {boolean} liked
+ * @property {string} username
  */
 
 /**
@@ -49,6 +51,12 @@
       * @returns {Promise<Result<Peer>>}
       */
      getPeer(user_id, peer_id){ }
+
+     /**
+      * @param {PeerDTO} user_id
+      * @returns {Promise<Result<Peer>>}
+      */
+     getPeers(user_id){ }
 
  };
  

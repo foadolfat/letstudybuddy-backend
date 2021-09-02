@@ -28,13 +28,16 @@ router
                     .json(
                         {
                             message:"User Created",
-                            USER_NAME:user.USERNAME,
+                            USERNAME:user.USERNAME,
                             EMAIL:user.EMAIL,
                             FNAME:user.FNAME,
                             LNAME:user.LNAME,
                             MAJOR:user.MAJOR,
                             DEGREE:user.DEGREE,
-                            EXPECTED_GRAD:user.EXPECTED_GRAD
+                            EXPECTED_GRAD:user.EXPECTED_GRAD,
+                            GPA:user.GPA,
+                            IMG:user.IMG,
+                            USER_ID:user.USER_ID
                         }
                     );
             }
@@ -97,7 +100,10 @@ router
                             LNAME:user.LNAME,
                             MAJOR:user.MAJOR,
                             DEGREE:user.DEGREE,
-                            EXPECTED_GRAD:user.EXPECTED_GRAD
+                            EXPECTED_GRAD:user.EXPECTED_GRAD,
+                            GPA:user.GPA,
+                            IMG:user.IMG,
+                            USER_ID:user.USER_ID
                         }
                     );
             }
@@ -125,13 +131,16 @@ router
                     .status(200)
                     .json(
                         {
-                            USER_NAME:user.USERNAME,
+                            USERNAME:user.USERNAME,
                             EMAIL:user.EMAIL,
                             FNAME:user.FNAME,
                             LNAME:user.LNAME,
                             MAJOR:user.MAJOR,
                             DEGREE:user.DEGREE,
-                            EXPECTED_GRAD:user.EXPECTED_GRAD
+                            EXPECTED_GRAD:user.EXPECTED_GRAD,
+                            GPA:user.GPA,
+                            IMG:user.IMG,
+                            USER_ID:user.USER_ID
                         }
                     );
             }

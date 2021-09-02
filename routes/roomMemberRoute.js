@@ -1,52 +1,55 @@
 var express = require(`express`)
 var router = express.Router();
 const ServiceLocator = require("../services/ServiceLocator");
-const ClassesService = require("../services/ClassesService");
+const RoomMemberService = require("../services/RoomMemberService");
 const authService = require("../services/AuthService");
 
 
-//CLASS ROUTES
+//ROOM MEMBER ROUTES
 router
     .use(function timeLog(req, res, next) {
-        console.log('Access classes Time: ', Date.now());
+        console.log('Access roomMember Time: ', Date.now());
         next();
     })
-    .post("/classes", authService.verifyToken, async(req, res) => {
+
+    .post("/roomMember", authService.verifyToken, async(req, res) => {
 
         /**
-         * @type {ClassesService}
+         * @type {RoomMemberService}
          */
-        const classesService = ServiceLocator.getService(ClassesService.name);
+        const roomMemberService = ServiceLocator.getService(RoomMemberService.name);
 
         try{
-            const { payload: classes, error } = await classesService.createClass(req.body, req.user_id);
-
+            const { payload: roomMember, error } = await roomMemberService.createRoomMember(req.body);
+            console.log(roomMember)
             if(error) {
                 res.status(400).json(error);
             } else {
                 res
                     .status(201)
                     .json(
-                        classes
+                        {
+                            roomMember
+                        }
                     );
             }
         }catch(e){
-            console.log("an error occured", e);
+            console.log("an error occured");
             res.status(500).end();
         }
         
         
     })
 
-    .delete("/classes", authService.verifyToken, async(req, res) => {
+    .delete("/roomMember", authService.verifyToken, async(req, res) => {
 
         /**
-         * @type {ClassesService}
+         * @type {RoomMemberService}
          */
-        const classesService = ServiceLocator.getService(ClassesService.name);
+        const roomMemberService = ServiceLocator.getService(RoomMemberService.name);
 
         try{
-            const { payload: message, error } = await classesService.deleteClass(req.user_id, req.body.class_name, req.body.school);
+            const { payload: message, error } = await roomMemberService.deleteRoomMember(req.body);
 
             if(error) {
                 res.status(400).json(error);
@@ -60,31 +63,30 @@ router
                     );
             }
         }catch(e){
-            console.log("an error occured", e);
+            console.log("an error occured");
             res.status(500).end();
         }
 
     })
 
-    .get("/classes", authService.verifyToken, async(req, res) => {
+    .put("/roomMember", authService.verifyToken, async(req, res) => {
 
         /**
-         * @type {ClassesService}
+         * @type {RoomMemberService}
          */
-        const classesService = ServiceLocator.getService(ClassesService.name);
+        const roomMemberService = ServiceLocator.getService(RoomMemberService.name);
 
         try{
-            const { payload: classes, error } = await classesService.getClasses(req.user_id);
+            const { payload: roomMember, error } = await roomMemberService.updateRoomMember(req.body);
 
             if(error) {
-                res.status(200).json(error);
+                res.status(400).json(error);
             } else {
-                
                 res
                     .status(200)
                     .json(
                         {
-                            classes
+                            roomMember
                         }
                     );
             }
@@ -95,15 +97,15 @@ router
 
     })
 
-    .put("/classes", authService.verifyToken, async(req, res) => {
+    .get("/roomMember", authService.verifyToken, async(req, res) => {
 
         /**
-         * @type {ClassesService}
+         * @type {RoomMemberService}
          */
-        const classesService = ServiceLocator.getService(ClassesService.name);
+        const roomMemberService = ServiceLocator.getService(RoomMemberService.name);
 
         try{
-            const { payload: classes, error } = await classesService.updateClass(req.body, req.user_id);
+            const { payload: roomMember, error } = await roomMemberService.getRoomMember(req.body);
 
             if(error) {
                 res.status(400).json(error);
@@ -112,7 +114,7 @@ router
                     .status(200)
                     .json(
                         {
-                            classes
+                            roomMember
                         }
                     );
             }

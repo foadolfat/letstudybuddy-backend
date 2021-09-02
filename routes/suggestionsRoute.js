@@ -4,6 +4,7 @@ const authService = require("../services/AuthService")
 const ServiceLocator = require("../services/ServiceLocator");
 const SuggestionsService = require("../services/SuggestionsService");
 
+//SUGGESTIONS ROUTE
 router
     .use(function timeLog(req, res, next) {
         console.log('Access suggestions Time: ', Date.now());

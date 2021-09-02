@@ -8,6 +8,8 @@
  * @property {string} major
  * @property {string} degree
  * @property {string} grad
+ * @property {string} img
+ * @property {number} gpa
  * @property {string} password
  */
 
@@ -20,6 +22,8 @@
  * @property {string} major
  * @property {string} degree
  * @property {string} grad
+ * @property {string} img
+ * @property {number} gpa
  */
 
  const BaseService = require("./BaseService");

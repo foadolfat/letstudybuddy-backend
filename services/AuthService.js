@@ -2,7 +2,6 @@ const bcrypt = require('bcrypt');
 const jwt = require("jsonwebtoken");
 const ServiceLocator = require("../services/ServiceLocator");
 const UsersService = require("../services/UsersService");
-
 const saltRounds = 10;
 const secret= "super-duper-secret";
 
@@ -36,7 +35,7 @@ async function authenticate(req, res, next){
          console.log("an error occured");
          res.status(500).end();
      }
-}
+};
 
 function encrypt(req, res, next){
     bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
@@ -47,7 +46,7 @@ function encrypt(req, res, next){
         req.hash = hash;
         next();
     });
-}
+};
 
 function verifyToken(req, res, next) {
     let token = req.headers["x-access-token"];
@@ -67,6 +66,8 @@ function verifyToken(req, res, next) {
       next();
     });
 };
+
+
 
 module.exports = {
     authenticate : authenticate,

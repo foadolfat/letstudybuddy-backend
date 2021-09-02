@@ -1,8 +1,8 @@
 const ERROR_CODES = require("../errors");
 const { Result, IError } = require("../Result");
-const UsersService = require("../UsersService");
+const RoomsService = require("../RoomsService");
 
-class MySQLUsersService extends UsersService {
+class MySQLRoomsService extends RoomsService {
 
     /**
      * @param {import("mysql").Connection} connection
@@ -18,14 +18,12 @@ class MySQLUsersService extends UsersService {
 
 
     /**
-     * @param {import("../UsersService").UserDTO} userDTO
-     * @returns {Promise<Result<import("../UsersService").User>>} 
+     * @returns {Promise<Result<import("../RoomsService").Room>>} 
      */
-    async createUser(userDTO, password) {
-        const createUserCMD = new Promise((resolve, reject) => {
+    async createRoom() {
+        const createRoomCMD = new Promise((resolve, reject) => {
             this.connection.query({
-                sql: "INSERT INTO users (USERNAME, FNAME, LNAME, EMAIL, PASS, MAJOR, IMG, GPA, DEGREE) VALUES(?,?,?,?,?,?,?,?,?);",
-                values:[userDTO.username, userDTO.fName, userDTO.lName, userDTO.email, password, userDTO.major, userDTO.img, userDTO.gpa, userDTO.degree]
+                sql: "INSERT INTO rooms VALUES();"
             },
             (err, results, fields) => {
                 if(err) {
@@ -35,7 +33,9 @@ class MySQLUsersService extends UsersService {
             });
         });
         try{
-            await createUserCMD;
+            const newRoom = await createRoomCMD;
+            //console.log("id is ",newRoom)
+            return new Result(newRoom, null)
         } catch(e) {
             switch(e.errno) {
 				// duplicate entry
@@ -62,19 +62,18 @@ class MySQLUsersService extends UsersService {
 			return new IError(`Unhandled error ${e.code} - ${e.errno}`, e.errno);
             
         }
-        return this.getUser(null, userDTO.username, null);
         
     }
 
     /**
-     * @param {number} user_id
+     * @param {number} room_id
      * @returns {Promise<Result<boolean>>}
      */
-     async deleteUser(user_id) {
-        const deleteUserCMD = new Promise((resolve, reject) => {
+     async deleteRoom(room_id) {
+        const deleteRoomCMD = new Promise((resolve, reject) => {
             this.connection.query({
-                sql: "DELETE FROM users WHERE USER_ID=?;",
-                values:[user_id]
+                sql: "DELETE FROM rooms WHERE ROOM_ID=?;",
+                values:[room_id]
             },
             (err, results, fields) => {
                 if(err) {
@@ -85,23 +84,12 @@ class MySQLUsersService extends UsersService {
             });
         });
         try{
-            const results = await deleteUserCMD;
+            const results = await deleteRoomCMD;
             if(results.affectedRows>0) return new Result(true, null);
             else return new Result(false, null);
 
         } catch(e) {
 
-            // switch(e.errno) {
-			// 	// duplicate entry
-			// 	case 1062: {
-			// 		return new Result(
-			// 			null,
-			// 			new IError(
-			// 				`Error ${ERROR_CODES.DATABASE.DUPLICATE.TXT}.`,
-			// 				ERROR_CODES.DATABASE.DUPLICATE.NUM
-			// 			));
-			// 	}
-			// }
 
 			console.log(e.code, e.errno);
 
@@ -112,15 +100,14 @@ class MySQLUsersService extends UsersService {
     
 
     /**
-     * @param {import("../UsersService").UserDTO} userDTO
-     * @param {number} user_id
-     * @returns {Promise<Result<import("../UsersService").User>>} 
+     * @param {import("../RoomsService").RoomDTO} roomDTO
+     * @returns {Promise<Result<import("../RoomsService").Room>>} 
      */
-     async updateUser(userDTO, user_id) {
-        const updateUserCMD = new Promise((resolve, reject) => {
+     async updateRoom(roomDTO) {
+        const updateRoomCMD = new Promise((resolve, reject) => {
             this.connection.query({
-                sql: "UPDATE users SET FNAME=?, LNAME=?, MAJOR=?, DEGREE=?, GPA=? WHERE USER_ID=?;",
-                values:[ userDTO.fName, userDTO.lName, userDTO.major, userDTO.degree, userDTO.gpa, user_id]
+                sql: "UPDATE users SET  WHERE ROOM_ID=?;",
+                values:[ roomDTO.room_id ]
             },
             (err, results, fields) => {
                 if(err) {
@@ -130,7 +117,7 @@ class MySQLUsersService extends UsersService {
             });
         });
         try{
-            await updateUserCMD;
+            await updateRoomCMD;
         } catch(e) {
             switch(e.errno) {
 				// duplicate entry
@@ -147,19 +134,23 @@ class MySQLUsersService extends UsersService {
 			return new IError(`Unhandled error ${e.code} - ${e.errno}`, e.errno);
             
         }
-        return this.getUser(user_id, null, null);
+        return this.getRoom(roomDTO.room_id);
         
         
     }
 
-    async getUser(user_id, username, email){
+    /**
+     * @param {number} room_id
+     * @returns {Promise<Result<import("../RoomsService").Room>>} 
+     */
+    async getRoom(room_id){
         /**
-         * @type {Promise<import("../UsersService").User>}
+         * @type {Promise<import("../RoomsService").Room>}
          */
-         const getUserCMD = new Promise((resolve, reject) => {
+         const getRoomCMD = new Promise((resolve, reject) => {
             this.connection.query({
-                sql:"SELECT *, CAST(PASS as CHAR) as PASS FROM users WHERE user_id=? OR username=? OR email=?;",
-                values: [user_id, username, email]
+                sql:"SELECT * FROM rooms WHERE room_id=?;",
+                values: [room_id]
             }, (err, results, fields) => {
                 if(err){
                     return reject(err);
@@ -176,8 +167,8 @@ class MySQLUsersService extends UsersService {
             });
         });
         try{
-            const newUser = await getUserCMD;
-            return new Result(newUser, null);
+            const room = await getRoomCMD;
+            return new Result(room, null);
 
         } catch(e) {
             switch(e.errno) {
@@ -200,5 +191,5 @@ class MySQLUsersService extends UsersService {
 
 };
 
-module.exports = MySQLUsersService;
+module.exports = MySQLRoomsService;
 

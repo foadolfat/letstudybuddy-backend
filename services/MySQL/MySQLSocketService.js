@@ -1,8 +1,8 @@
 const ERROR_CODES = require("../errors");
 const { Result, IError } = require("../Result");
-const UsersService = require("../UsersService");
+const SocketService = require("../SocketService");
 
-class MySQLUsersService extends UsersService {
+class MySQLSocketService extends SocketService {
 
     /**
      * @param {import("mysql").Connection} connection
@@ -18,14 +18,15 @@ class MySQLUsersService extends UsersService {
 
 
     /**
-     * @param {import("../UsersService").UserDTO} userDTO
-     * @returns {Promise<Result<import("../UsersService").User>>} 
+     * @param {number} user_id
+     * @param {string} socket_id
+     * @returns {Promise<Result<import("../SocketService").Socket>>} 
      */
-    async createUser(userDTO, password) {
-        const createUserCMD = new Promise((resolve, reject) => {
+    async createSocket(user_id, socket_id) {
+        const createSocketCMD = new Promise((resolve, reject) => {
             this.connection.query({
-                sql: "INSERT INTO users (USERNAME, FNAME, LNAME, EMAIL, PASS, MAJOR, IMG, GPA, DEGREE) VALUES(?,?,?,?,?,?,?,?,?);",
-                values:[userDTO.username, userDTO.fName, userDTO.lName, userDTO.email, password, userDTO.major, userDTO.img, userDTO.gpa, userDTO.degree]
+                sql: "INSERT INTO sockets (USER_ID, SOCKET_ID) VALUES(?,?) ON DUPLICATE KEY UPDATE socket_id=?;",
+                values:[user_id, socket_id, socket_id]
             },
             (err, results, fields) => {
                 if(err) {
@@ -35,7 +36,7 @@ class MySQLUsersService extends UsersService {
             });
         });
         try{
-            await createUserCMD;
+            await createSocketCMD;
         } catch(e) {
             switch(e.errno) {
 				// duplicate entry
@@ -62,19 +63,20 @@ class MySQLUsersService extends UsersService {
 			return new IError(`Unhandled error ${e.code} - ${e.errno}`, e.errno);
             
         }
-        return this.getUser(null, userDTO.username, null);
+        return this.getSocket(user_id);
         
     }
 
     /**
      * @param {number} user_id
+     * @param {string} socket_id
      * @returns {Promise<Result<boolean>>}
      */
-     async deleteUser(user_id) {
-        const deleteUserCMD = new Promise((resolve, reject) => {
+     async deleteSocket(user_id, socket_id) {
+        const deleteSocketCMD = new Promise((resolve, reject) => {
             this.connection.query({
-                sql: "DELETE FROM users WHERE USER_ID=?;",
-                values:[user_id]
+                sql: "DELETE FROM sockets WHERE USER_ID=? and SOCKET_ID=?;",
+                values:[user_id, socket_id]
             },
             (err, results, fields) => {
                 if(err) {
@@ -85,23 +87,12 @@ class MySQLUsersService extends UsersService {
             });
         });
         try{
-            const results = await deleteUserCMD;
+            const results = await deleteSocketCMD;
             if(results.affectedRows>0) return new Result(true, null);
             else return new Result(false, null);
 
         } catch(e) {
 
-            // switch(e.errno) {
-			// 	// duplicate entry
-			// 	case 1062: {
-			// 		return new Result(
-			// 			null,
-			// 			new IError(
-			// 				`Error ${ERROR_CODES.DATABASE.DUPLICATE.TXT}.`,
-			// 				ERROR_CODES.DATABASE.DUPLICATE.NUM
-			// 			));
-			// 	}
-			// }
 
 			console.log(e.code, e.errno);
 
@@ -112,15 +103,15 @@ class MySQLUsersService extends UsersService {
     
 
     /**
-     * @param {import("../UsersService").UserDTO} userDTO
      * @param {number} user_id
-     * @returns {Promise<Result<import("../UsersService").User>>} 
+     * @param {string} socket_id
+     * @returns {Promise<Result<import("../SocketService").Socket>>} 
      */
-     async updateUser(userDTO, user_id) {
-        const updateUserCMD = new Promise((resolve, reject) => {
+     async updateSocket(socket_id, user_id) {
+        const updateSocketCMD = new Promise((resolve, reject) => {
             this.connection.query({
-                sql: "UPDATE users SET FNAME=?, LNAME=?, MAJOR=?, DEGREE=?, GPA=? WHERE USER_ID=?;",
-                values:[ userDTO.fName, userDTO.lName, userDTO.major, userDTO.degree, userDTO.gpa, user_id]
+                sql: "UPDATE sockets SET SOCKET_ID=? WHERE USER_ID=?;",
+                values:[ socket_id, user_id]
             },
             (err, results, fields) => {
                 if(err) {
@@ -130,7 +121,7 @@ class MySQLUsersService extends UsersService {
             });
         });
         try{
-            await updateUserCMD;
+            await updateSocketCMD;
         } catch(e) {
             switch(e.errno) {
 				// duplicate entry
@@ -147,19 +138,23 @@ class MySQLUsersService extends UsersService {
 			return new IError(`Unhandled error ${e.code} - ${e.errno}`, e.errno);
             
         }
-        return this.getUser(user_id, null, null);
+        return this.getSocket(user_id);
         
         
     }
 
-    async getUser(user_id, username, email){
+    /**
+     * @param {number} user_id
+     * @returns {Promise<Result<import("../SocketService").Socket>>} 
+     */
+    async getSocket(user_id){
         /**
-         * @type {Promise<import("../UsersService").User>}
+         * @type {Promise<import("../SocketService").Socket>}
          */
-         const getUserCMD = new Promise((resolve, reject) => {
+         const getSocketCMD = new Promise((resolve, reject) => {
             this.connection.query({
-                sql:"SELECT *, CAST(PASS as CHAR) as PASS FROM users WHERE user_id=? OR username=? OR email=?;",
-                values: [user_id, username, email]
+                sql:"SELECT * FROM sockets WHERE USER_ID=?;",
+                values: [user_id]
             }, (err, results, fields) => {
                 if(err){
                     return reject(err);
@@ -167,7 +162,7 @@ class MySQLUsersService extends UsersService {
 
                 if(!results || results.length === 0){
                     //wtf
-                    var err = new Error("User does not exist!");
+                    var err = new Error("Socket does not exist!");
                     err.errno = 1404;
                     err.code = "NOT FOUND";
                     return reject(err);
@@ -176,8 +171,8 @@ class MySQLUsersService extends UsersService {
             });
         });
         try{
-            const newUser = await getUserCMD;
-            return new Result(newUser, null);
+            const newSocket = await getSocketCMD;
+            return new Result(newSocket, null);
 
         } catch(e) {
             switch(e.errno) {
@@ -200,5 +195,5 @@ class MySQLUsersService extends UsersService {
 
 };
 
-module.exports = MySQLUsersService;
+module.exports = MySQLSocketService;
 
