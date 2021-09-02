@@ -20,8 +20,8 @@ const jwt = require("jsonwebtoken");
 const secret= "super-duper-secret";
 
 const app = express();
-app.use(require('cors')());
-const PORT = 5050;
+
+const PORT = process.env.PORT || 5050;
 
 
 
@@ -36,9 +36,16 @@ const io = socketIO(server, {
     cors: true,
     //origins:["localhost:3000"]
 });
+// var express = require('express'),
+//     app = express(),
+//     server = require('http').createServer(app),
+//     io = require('socket.io')
+//     io.listen(server)
+// server.listen(process.env.PORT || 3000);
 
-server.listen(socketPort, () => {
-    console.log(`listening on *:${socketPort}`);
+app.use(require('cors')());
+server.listen(PORT, () => {
+    console.log(`listening on *:${PORT}`);
 });
 
 io.use((socket, next) => {
@@ -269,9 +276,9 @@ const main = () => {
         res.send("Bad Request!");
     });
 
-    app.listen(process.env.PORT || PORT, () => {
-        console.log(`Listening on PORT ${PORT}`);
-    });
+    // app.listen(process.env.PORT || PORT, () => {
+    //     console.log(`Listening on PORT ${PORT}`);
+    // });
     
 };
 
