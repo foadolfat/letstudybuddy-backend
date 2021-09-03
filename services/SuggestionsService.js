@@ -6,6 +6,11 @@
  * @property {string} major
  * @property {string} degree
  * @property {string} grad
+ * @property {string} username
+ * @property {number} gpa
+ * @property {string} email
+ * @property {string} img
+ * @property {number} common_count
  */
 
 
