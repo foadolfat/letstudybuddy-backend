@@ -22,7 +22,7 @@ class MySQLSuggestionsService extends SuggestionsService {
     async createSuggestion(user_id) {
         const createSuggestionCMD = new Promise((resolve, reject) => {
             var query = `select 
-                            user_id as peer_id, username, fname, lname, major, degree, expected_grad 
+                            user_id as peer_id, username, fname, lname, major, degree, expected_grad , gpa
                         from
                             users 
                         where
