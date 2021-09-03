@@ -76,7 +76,7 @@ class MySQLSuggestionsService extends SuggestionsService {
                         group by
                             c2.user_id
                         order by
-                            count(c2.user_id) desc;` ;
+                            count(c2.user_id) ASC;` ;
             this.connection.query({
                 sql:query,
                 values:[user_id, user_id, user_id, true, false]
