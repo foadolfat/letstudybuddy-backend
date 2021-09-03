@@ -95,6 +95,35 @@ router
 
     })
 
+    .get("/peer_classes/:peer_id", authService.verifyToken, async(req, res) => {
+
+        /**
+         * @type {ClassesService}
+         */
+        const classesService = ServiceLocator.getService(ClassesService.name);
+
+        try{
+            const { payload: classes, error } = await classesService.getClasses(req.params.peer_id);
+
+            if(error) {
+                res.status(200).json(error);
+            } else {
+                
+                res
+                    .status(200)
+                    .json(
+                        {
+                            classes
+                        }
+                    );
+            }
+        }catch(e){
+            console.log("an error occured");
+            res.status(500).end();
+        }
+
+    })
+
     .put("/classes", authService.verifyToken, async(req, res) => {
 
         /**
