@@ -44,7 +44,7 @@ class MySQLPeerssService extends PeersService {
                             r.user_id=?);`,
                 values: [user_id, user_id]
             }, (err, results, fields) => {
-                connection.release();
+                
                 if(err){
                     return reject(err);
                 }
@@ -115,7 +115,7 @@ class MySQLPeerssService extends PeersService {
                 sql:"SELECT * FROM PEERS WHERE USER_ID=? AND PEER_ID=?;",
                 values: [user_id, peer_id]
             }, (err, results, fields) => {
-                connection.release();
+                
                 if(err){
                     return reject(err);
                 }
@@ -228,7 +228,7 @@ class MySQLPeerssService extends PeersService {
                 values:[user_id, peer_id]
             },
             (err, results, fields) => {
-                connection.release();
+                
                 if(err) {
                     return reject(err);
                 }
