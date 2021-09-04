@@ -125,7 +125,7 @@ class MySQLUsersService extends UsersService {
             },
             (err, results, fields) => {
                 if(err) {
-                    throw(err)
+                    
                     return reject(err);
                 }
                 resolve(results);
