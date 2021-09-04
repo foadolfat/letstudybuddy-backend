@@ -77,6 +77,7 @@ class MySQLUsersService extends UsersService {
                 values:[user_id]
             },
             (err, results, fields) => {
+                connection.release();
                 if(err) {
                     return reject(err);
                 }
@@ -161,6 +162,7 @@ class MySQLUsersService extends UsersService {
                 sql:"SELECT *, CAST(PASS as CHAR) as PASS FROM users WHERE user_id=? OR username=? OR email=?;",
                 values: [user_id, username, email]
             }, (err, results, fields) => {
+                connection.release();
                 if(err){
                     return reject(err);
                 }

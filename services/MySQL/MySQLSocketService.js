@@ -29,6 +29,7 @@ class MySQLSocketService extends SocketService {
                 values:[user_id, socket_id, socket_id]
             },
             (err, results, fields) => {
+
                 if(err) {
                     return reject(err);
                 }
@@ -79,6 +80,7 @@ class MySQLSocketService extends SocketService {
                 values:[user_id, socket_id]
             },
             (err, results, fields) => {
+                connection.release();
                 if(err) {
                     return reject(err);
                 }
@@ -156,6 +158,7 @@ class MySQLSocketService extends SocketService {
                 sql:"SELECT * FROM sockets WHERE USER_ID=?;",
                 values: [user_id]
             }, (err, results, fields) => {
+                connection.release();
                 if(err){
                     return reject(err);
                 }

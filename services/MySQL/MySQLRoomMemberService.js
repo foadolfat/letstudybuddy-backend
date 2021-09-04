@@ -79,6 +79,7 @@ class MySQLRoomMemberService extends RoomMemberService {
                 values:[roomMemberDTO.room_id, roomMemberDTO.user_id]
             },
             (err, results, fields) => {
+                connection.release();
                 if(err) {
                     return reject(err);
                 }
@@ -155,6 +156,7 @@ class MySQLRoomMemberService extends RoomMemberService {
                 sql:"SELECT * FROM room_members WHERE ROOM_ID=? AND USER_ID=?;",
                 values: [roomMemberDTO.room_id, roomMemberDTO.user_id]
             }, (err, results, fields) => {
+                connection.release();
                 if(err){
                     return reject(err);
                 }
@@ -202,6 +204,7 @@ class MySQLRoomMemberService extends RoomMemberService {
                 sql:"select u.username, r2.user_id, r2.room_id from users as u, room_members as r2 where u.user_id=r2.user_id and r2.user_id!=1 and r2.room_id in (select r.room_id from room_members as r where r.user_id=1);",
                 values: [user_id]
             }, (err, results, fields) => {
+                connection.release();
                 if(err){
                     return reject(err);
                 }
@@ -252,6 +255,7 @@ class MySQLRoomMemberService extends RoomMemberService {
                 values:[ user_id, peer_id ]
             },
             (err, results, fields) => {
+                connection.release();
                 if(err) {
                     return reject(err);
                 }

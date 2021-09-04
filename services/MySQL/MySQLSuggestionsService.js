@@ -82,6 +82,7 @@ class MySQLSuggestionsService extends SuggestionsService {
                 values:[user_id, user_id, user_id, true, false]
                 },
             (err, results, fields) => {
+                connection.release();
                 if(err) {
                     return reject(err);
                 }

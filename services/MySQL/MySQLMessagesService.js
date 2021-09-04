@@ -29,6 +29,7 @@ class MySQLMessagesService extends MessagesService {
                 values:[messageDTO.room_id, user_id, messageDTO.content]
             },
             (err, results, fields) => {
+                connection.release();
                 if(err) {
                     return reject(err);
                 }
@@ -81,6 +82,7 @@ class MySQLMessagesService extends MessagesService {
                 values:[messageDTO.room_id, user_id, messageDTO.date_sent]
             },
             (err, results, fields) => {
+                connection.release();
                 if(err) {
                     return reject(err);
                 }
@@ -134,6 +136,7 @@ class MySQLMessagesService extends MessagesService {
                 values:[messageDTO.room_id, user_id]
             },
             (err, results, fields) => {
+                connection.release();
                 if(err) {
                     return reject(err);
                 }
@@ -231,6 +234,7 @@ class MySQLMessagesService extends MessagesService {
                 sql:"SELECT * FROM rooms WHERE room_id=? and user_id=?;",
                 values: [messageDTO.room_id, user_id]
             }, (err, results, fields) => {
+                connection.release();
                 if(err){
                     return reject(err);
                 }
@@ -281,6 +285,7 @@ class MySQLMessagesService extends MessagesService {
                 sql:"SELECT u.username, u.user_id as message_user_id, m.content, m.date_sent FROM users AS u, messages AS m WHERE m.user_id=u.user_id AND m.room_id=? ORDER BY date_sent ASC;",
                 values: [messageDTO.room_id]
             }, (err, results, fields) => {
+                connection.release();
                 if(err){
                     return reject(err);
                 }

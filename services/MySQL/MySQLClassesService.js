@@ -33,6 +33,7 @@ class MySQLClassessService extends ClassesService {
                 sql:"SELECT * FROM CLASSES WHERE USER_ID=?;",
                 values: [user_id]
             }, (err, results, fields) => {
+                connection.release();
                 if(err){
                     return reject(err);
                 }
@@ -144,6 +145,7 @@ class MySQLClassessService extends ClassesService {
                 values:[user_id, class_name, school]
             },
             (err, results, fields) => {
+                connection.release();
                 if(err) {
                     return reject(err);
                 }

@@ -26,6 +26,7 @@ class MySQLRoomsService extends RoomsService {
                 sql: "INSERT INTO rooms VALUES();"
             },
             (err, results, fields) => {
+                connection.release();
                 if(err) {
                     return reject(err);
                 }
@@ -76,6 +77,7 @@ class MySQLRoomsService extends RoomsService {
                 values:[room_id]
             },
             (err, results, fields) => {
+                connection.release();
                 if(err) {
                     return reject(err);
                 }
@@ -152,6 +154,7 @@ class MySQLRoomsService extends RoomsService {
                 sql:"SELECT * FROM rooms WHERE room_id=?;",
                 values: [room_id]
             }, (err, results, fields) => {
+                connection.release();
                 if(err){
                     return reject(err);
                 }
