@@ -42,7 +42,7 @@ router
                     );
             }
         }catch(e){
-            console.log("an error occured");
+            console.log("an error occured in userRoutes, post/user");
             res.status(500).end();
         }
         
@@ -71,7 +71,7 @@ router
                     );
             }
         }catch(e){
-            console.log("an error occured");
+            console.log("an error occured in userRoutes, delete/user");
             res.status(500).end();
         }
 
@@ -108,7 +108,7 @@ router
                     );
             }
         }catch(e){
-            console.log("an error occured");
+            console.log("an error occured in userRoutes, put/user");
             res.status(500).end();
         }
 
@@ -145,7 +145,7 @@ router
                     );
             }
         }catch(e){
-            console.log("an error occured");
+            console.log("an error occured in userRoutes, get/user");
             res.status(500).end();
         }
 

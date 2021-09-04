@@ -27,14 +27,17 @@ const PORT = process.env.PORT || 5050;
 
 // const NEW_MESSAGE_EVENT = "new-message-event";
 // const NEW_ROOM = "new-room-event"; 
+//let app    = require('express')();
+// let server = app.listen(PORT);
+// let io     = require('socket.io')(server);
 const NEW_PEER = "new_peer_event";
 const http = require("http");
 const socketIO = require("socket.io");
-const socketPort = process.env.PORT || 3030;
+//const socketPort = process.env.PORT || 3030;
 const server = http.createServer(app);
 const io = socketIO(server, {
     cors: true,
-    //origins:["localhost:3000"]
+    origins:["localhost:3000"]
 });
 // var express = require('express'),
 //     app = express(),
@@ -211,15 +214,15 @@ const databaseSetup = async () => {
     try{
         await mysqlCMD;
         const connection = require("mysql").createPool({
-            // connectionLimit : 100,
-            // host: "localhost",
-            // user:"root",
-            // database:"study"
             connectionLimit : 100,
-            host: "us-cdbr-east-04.cleardb.com",
-            user:"b4410f552ec22f",
-            database:"heroku_d74528e87dcb28b",
-            password:"cd993a39"
+            host: "localhost",
+            user:"root",
+            database:"study"
+            // connectionLimit : 100,
+            // host: "us-cdbr-east-04.cleardb.com",
+            // user:"b4410f552ec22f",
+            // database:"heroku_d74528e87dcb28b",
+            // password:"cd993a39"
         });
         const usersService = new MySQLUsersService(connection);
         const classesService = new MySQLClassesService(connection);
