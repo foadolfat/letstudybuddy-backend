@@ -5,13 +5,13 @@ const SocketService = require("../SocketService");
 class MySQLSocketService extends SocketService {
 
     /**
-     * @param {import("mysql").Connection} connection
+     * @param {import("mysql").Pool} connection
      */
     constructor(connection) {
         super();
         /**
          * @private
-         * @type {import("mysql").Connection}
+         * @type {import("mysql").Pool}
          */
         this.connection = connection;
     }
@@ -159,6 +159,7 @@ class MySQLSocketService extends SocketService {
                 sql:"SELECT * FROM sockets WHERE USER_ID=?;",
                 values: [user_id]
             }, (err, results, fields) => {
+                
                 if(err){
                     return reject(err);
                 }

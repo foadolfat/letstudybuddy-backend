@@ -44,6 +44,12 @@
       */
      getRoomMember(roomMemberDTO){ }
 
+     /**
+      * @param {number} room_id
+      * @returns {Promise<Result<RoomMember>>}
+      */
+     getMembersByRoom(room_id){ }
+
     /**
       * @param {number} user_id
       * @returns {Promise<Result<RoomMember>>}

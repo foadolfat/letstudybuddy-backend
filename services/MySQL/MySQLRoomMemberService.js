@@ -5,13 +5,13 @@ const RoomMemberService = require("../RoomMemberService");
 class MySQLRoomMemberService extends RoomMemberService {
 
     /**
-     * @param {import("mysql").Connection} connection
+     * @param {import("mysql").Pool} connection
      */
     constructor(connection) {
         super();
         /**
          * @private
-         * @type {import("mysql").Connection}
+         * @type {import("mysql").Pool}
          */
         this.connection = connection;
     }
@@ -246,7 +246,7 @@ class MySQLRoomMemberService extends RoomMemberService {
     /**
      * @param {number} user_id
      * @param {number} peer_id
-     * @returns {Promise<Result<boolean>>} 
+     * @returns {Promise<Result<number>>} 
      */
      async checkForCommonRoom(user_id, peer_id) {
         const checkForCommonRoomCMD = new Promise((resolve, reject) => {
@@ -267,8 +267,10 @@ class MySQLRoomMemberService extends RoomMemberService {
             
             const result = await checkForCommonRoomCMD;
             console.log("sql ",result[0]);
-            if(!result || result.length === 0) return new Result(false, null);
-            else return new Result(true, null);
+            return new Result(result[0], null);
+            // console.log("sql ",result[0]);
+            // if(!result || result.length === 0) return new Result(false, null);
+            // else return new Result(true, null);
         } catch(e) {
             switch(e.errno) {
 				// duplicate entry
@@ -286,8 +288,57 @@ class MySQLRoomMemberService extends RoomMemberService {
             
         }
 
-        
-        
+    }
+
+
+    /**
+     * @param {number} room_id
+     * @returns {Promise<Result<import("../RoomMemberService").RoomMember>>} 
+     */
+     async getMembersByRoom(room_id){
+        /**
+         * @type {Promise<import("../RoomMemberService").RoomMember>}
+         */
+         const getRoomMemberCMD = new Promise((resolve, reject) => {
+            this.connection.query({
+                sql:"SELECT * FROM room_members WHERE ROOM_ID=?;",
+                values: [room_id]
+            }, (err, results, fields) => {
+                
+                if(err){
+                    return reject(err);
+                }
+
+                if(!results || results.length === 0){
+                    //wtf
+                    var err = new Error("User does not exist!");
+                    err.errno = 1404;
+                    err.code = "NOT FOUND";
+                    return reject(err);
+                }
+                resolve(results);
+            });
+        });
+        try{
+            const roomMembers = await getRoomMemberCMD;
+            return new Result(roomMembers, null);
+
+        } catch(e) {
+            switch(e.errno) {
+				// duplicate entry
+				case 1404: {
+					return new Result(
+						null,
+						new IError(
+							`Error ${ERROR_CODES.DATABASE.NOT_FOUND.TXT}.`,
+							ERROR_CODES.DATABASE.NOT_FOUND.NUM
+						));
+				}
+			}
+
+			return new IError(`Unhandled error ${e.code} - ${e.errno}`, e.errno);
+            
+        }
     }
 
 };

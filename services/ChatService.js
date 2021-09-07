@@ -19,6 +19,7 @@ module.exports = (socket) => {
     });
 
     socket.on(NEW_MESSAGE_EVENT, async (data, room) => {
+        console.log("chatservice")
         //console.log(token)
         // let user_id = '';
         // jwt.verify(token, secret, (err, decoded) => {

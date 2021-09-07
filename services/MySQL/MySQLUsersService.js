@@ -5,13 +5,13 @@ const UsersService = require("../UsersService");
 class MySQLUsersService extends UsersService {
 
     /**
-     * @param {import("mysql").Connection} connection
+     * @param {import("mysql").Pool} connection
      */
     constructor(connection) {
         super();
         /**
          * @private
-         * @type {import("mysql").Connection}
+         * @type {import("mysql").Pool}
          */
         this.connection = connection;
     }
@@ -124,6 +124,7 @@ class MySQLUsersService extends UsersService {
                 values:[userDTO.username, userDTO.fName, userDTO.lName, userDTO.major, userDTO.degree, userDTO.gpa, user_id]
             },
             (err, results, fields) => {
+                
                 if(err) {
                     
                     return reject(err);

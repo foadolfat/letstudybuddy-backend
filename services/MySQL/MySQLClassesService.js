@@ -6,13 +6,13 @@ const ClassesService = require("../ClassesService");
 
 class MySQLClassessService extends ClassesService {
     /**
-     * @param {import("mysql").Connection} connection
+     * @param {import("mysql").Pool} connection
      */
      constructor(connection) {
         super();
         /**
          * @private
-         * @type {import("mysql").Connection}
+         * @type {import("mysql").Pool}
          */
         this.connection = connection;
     }

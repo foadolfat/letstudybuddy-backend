@@ -5,13 +5,13 @@ const MessagesService = require("../MessagesService");
 class MySQLMessagesService extends MessagesService {
 
     /**
-     * @param {import("mysql").Connection} connection
+     * @param {import("mysql").Pool} connection
      */
     constructor(connection) {
         super();
         /**
          * @private
-         * @type {import("mysql").Connection}
+         * @type {import("mysql").Pool}
          */
         this.connection = connection;
     }

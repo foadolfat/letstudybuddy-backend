@@ -5,13 +5,13 @@ const RoomsService = require("../RoomsService");
 class MySQLRoomsService extends RoomsService {
 
     /**
-     * @param {import("mysql").Connection} connection
+     * @param {import("mysql").Pool} connection
      */
     constructor(connection) {
         super();
         /**
          * @private
-         * @type {import("mysql").Connection}
+         * @type {import("mysql").Pool}
          */
         this.connection = connection;
     }
