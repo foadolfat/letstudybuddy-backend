@@ -75,7 +75,7 @@ const databaseSetup = async () => {
             // host: "localhost",
             // user:"root",
             // database:"study"
-            connectionLimit : 2,
+            connectionLimit : 10,
             host: "us-cdbr-east-04.cleardb.com",
             user:"b4410f552ec22f",
             database:"heroku_d74528e87dcb28b",
