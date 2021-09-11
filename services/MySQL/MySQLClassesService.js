@@ -89,6 +89,78 @@ class MySQLClassessService extends ClassesService {
         }
     }
 
+    /**
+     * @param {number} user_id
+     * @param {number} peer_id
+     * @param {string} class_name
+     * @param {string} school
+     * @returns {Promise<Result<import("../ClassesService").Class>>} 
+     */
+     async getPeerClasses(user_id, peer_id){
+        /**
+         * @type {Promise<import("../ClassesService").Class>}
+         */
+         const getClassesCMD = new Promise((resolve, reject) => {
+            this.connection.query({
+                sql:"select * from classes c1, classes c2 where c1.USER_ID=? and c2.USER_ID=? and c1.CLASS_NAME = c2.CLASS_NAME;",
+                values: [user_id, peer_id]
+            }, (err, results, fields) => {
+                
+                if(err){
+                    return reject(err);
+                }
+
+                if(!results || results.length === 0){
+                    //wtf
+                    var err = new Error("Class does not exist!");
+                    err.errno = 1404;
+                    err.code = "NOT FOUND";
+                    return reject(err);
+                }
+                resolve(results);
+            });
+        });
+        try{
+            const newClass = await getClassesCMD;
+            return new Result(newClass, null);
+
+        } catch(e) {
+
+            switch(e.errno) {
+                // duplicate entry
+                case 1062: {
+                    return new Result(
+                        null,
+                        new IError(
+                            `Error ${ERROR_CODES.DATABASE.DUPLICATE.TXT}.`,
+                            ERROR_CODES.DATABASE.DUPLICATE.NUM
+                        ));
+                }
+                case 1404: {
+                    return new Result(
+                        null,
+                        new IError(
+                            `Error ${ERROR_CODES.DATABASE.NOT_FOUND.TXT}.`,
+                            ERROR_CODES.DATABASE.NOT_FOUND.NUM
+                        ));
+                }
+                case 1452: {
+                    return new Result(
+                        null,
+                        new IError(
+                            `Error ${ERROR_CODES.DATABASE.NO_REFERENCE.TXT}.`,
+                            ERROR_CODES.DATABASE.NO_REFERENCE.NUM
+                        ));
+                }
+            }
+
+            console.log(e.code, e.errno);
+
+            return new IError(`Unhandled error ${e.code} - ${e.errno}`, e.errno);
+            
+        }
+    }
+
 
     /**
      * @param {import("../ClassesService").CLassDTO} classDTO

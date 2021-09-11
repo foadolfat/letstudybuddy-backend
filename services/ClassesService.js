@@ -50,6 +50,13 @@
       */
      getClasses(user_id){ }
 
+     /**
+      * @param {number} user_id
+      * @param {number} peer_id
+      * @returns {Promise<Result<Class>>}
+      */
+      getPeerClasses(user_id, peer_id){ }
+
  };
  
  module.exports = ClassService

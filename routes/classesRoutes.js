@@ -103,7 +103,7 @@ router
         const classesService = ServiceLocator.getService(ClassesService.name);
 
         try{
-            const { payload: classes, error } = await classesService.getClasses(req.params.peer_id);
+            const { payload: classes, error } = await classesService.getPeerClasses(req.user_id, req.params.peer_id);
 
             if(error) {
                 res.status(200).json(error);
